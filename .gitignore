@@ -27,6 +27,7 @@
 *.so
 *.so.*
 *.dylib
+build/
 
 # Executables
 *.exe
@@ -50,3 +51,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+*.bak
+.vs/

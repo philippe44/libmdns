@@ -17,8 +17,6 @@
 *.pch
 
 # Libraries
-*.lib
-*.a
 *.la
 *.lo
 
@@ -54,3 +52,4 @@ dkms.conf
 
 *.bak
 .vs/
+lib/

@@ -33,7 +33,9 @@ do
 	done
 done
 
-declare -a items=(mdns-sd tinysvcmdns)
+declare -a items=( mdnssd tinysvcmdns )
+declare -a tinysvcmdns=( tinymdns.h )
+declare -a mdnssd=( mdnssd.h )
 
 # then iterate selected platforms/compilers
 for item in ${items[@]}
@@ -54,6 +56,15 @@ do
 		mkdir -p ../targets/$host/$platform
 		cp lib/$host/$platform/lib*.a $_		
 		ar -rc --thin $_/libmdns.a $_/lib*.a
+		
+		mkdir -p ../targets/$host/$platform/include
+		declare -n headers=$item
+		for header in ${headers[@]}
+		do
+			echo $header
+		done	
+		
 		cd $pwd
 	done	
 done
+

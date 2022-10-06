@@ -4,3 +4,6 @@
 [submodule "mdns-sd"]
 	path = mdns-sd
 	url = https://github.com/philippe44/mdns-sd
+[submodule "mdnssd"]
+	path = mdnssd
+	url = https://github.com/philippe44/mdnssd

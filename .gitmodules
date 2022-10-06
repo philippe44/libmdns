@@ -1,0 +1,6 @@
+[submodule "tinysvcmdns"]
+	path = tinysvcmdns
+	url = https://github.com/philippe44/tinysvcmdns
+[submodule "mdns-sd"]
+	path = mdns-sd
+	url = https://github.com/philippe44/mdns-sd

@@ -50,6 +50,7 @@ do
 		cd $item
 		make CC=${alias[$cc]:-$cc} PLATFORM=$platform $clean
 		cd $pwd
+
 		if [[ -n $clean ]]; then
 			continue
 		fi

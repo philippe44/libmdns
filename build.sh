@@ -34,7 +34,7 @@ do
 done
 
 declare -a items=( mdnssd tinysvcmdns )
-declare -a tinysvcmdns=( tinymdns.h )
+declare -a tinysvcmdns=( tinysvcmdns.h )
 declare -a mdnssd=( mdnssd.h )
 
 # then iterate selected platforms/compilers
@@ -49,22 +49,23 @@ do
 		pwd=$(pwd)
 		cd $item
 		make CC=${alias[$cc]:-$cc} PLATFORM=$platform $clean
+		cd $pwd
 		if [[ -n $clean ]]; then
 			continue
 		fi
 	
-		mkdir -p ../targets/$host/$platform
-		cp lib/$host/$platform/lib*.a $_		
-		ar -rc --thin $_/libmdns.a $_/lib*.a
-		
-		mkdir -p ../targets/$host/$platform/include
+		 mkdir -p targets/$host/$platform
+		 cp $item/lib/$host/$platform/lib$item.a $_		
+		 ar -rc --thin $_/libmdns.a $_/lib$item.a		
+	done	
+	
+	if [[ -z $clean ]]; then
 		declare -n headers=$item
+		mkdir -p targets/include/$item	
 		for header in ${headers[@]}
 		do
-			echo $header
+			cp $item/$header $_
 		done	
-		
-		cd $pwd
-	done	
+	fi	
 done
 

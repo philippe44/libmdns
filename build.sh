@@ -38,35 +38,37 @@ declare -a tinysvcmdns=( tinysvcmdns.h )
 declare -a mdnssd=( mdnssd.h )
 
 # then iterate selected platforms/compilers
-for item in ${items[@]}
+for cc in ${compilers[@]}
 do
-	for cc in ${compilers[@]}
+	IFS=- read -r platform host dummy <<< $cc
+	
+	export CFLAGS=${cflags[$cc]}
+	
+	target=targets/$host/$platform	
+	mkdir -p $target
+	rm -f $_/libmdns.a
+	pwd=$(pwd)
+	
+	for item in ${items[@]}
 	do
-		IFS=- read -r platform host dummy <<< $cc
-	
-		export CFLAGS=${cflags[$cc]}
-	
-		pwd=$(pwd)
 		cd $item
 		make CC=${alias[$cc]:-$cc} PLATFORM=$platform $clean
 		cd $pwd
 
-		if [[ -n $clean ]]; then
-			continue
-		fi
-	
-		 mkdir -p targets/$host/$platform
-		 cp $item/lib/$host/$platform/lib$item.a $_		
-		 ar -rc --thin $_/libmdns.a $_/lib$item.a		
+		if [[ -z $clean ]]; then
+			# copy libraries & create thin version
+			cp $item/lib/$host/$platform/lib$item.a $target		
+			ar -rc --thin $_/libmdns.a $_/lib$item.a		
+			
+			# copy headers
+			declare -n headers=$item
+			mkdir -p targets/include/$item	
+			for header in ${headers[@]}
+			do
+				cp -u $item/$header $_
+			done
+		else 	
+			rm -f $target/lib$item.a
+		fi	
 	done	
-	
-	if [[ -z $clean ]]; then
-		declare -n headers=$item
-		mkdir -p targets/include/$item	
-		for header in ${headers[@]}
-		do
-			cp $item/$header $_
-		done	
-	fi	
 done
-

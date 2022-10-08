@@ -57,7 +57,7 @@ do
 	
 		 mkdir -p targets/$host/$platform
 		 cp $item/lib/$host/$platform/lib$item.a $_		
-		 ar -rc --thin $_/libmdns.a $_/lib$item.a		
+		 ar -r --thin $_/libmdns.a $_/lib$item.a		
 	done	
 	
 	if [[ -z $clean ]]; then

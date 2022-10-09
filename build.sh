@@ -9,7 +9,10 @@ IFS= read -ra candidates <<< "$list"
 
 # do we have "clean" somewhere in parameters (assuming no compiler has "clean" in it...
 if [[ $@[*]} =~ clean ]]; then
-	clean="clean"
+	clean=y
+	make="cleanlib"
+else
+	make="lib"	
 fi	
 
 # first select platforms/compilers
@@ -52,7 +55,7 @@ do
 	for item in ${items[@]}
 	do
 		cd $item
-		make CC=${alias[$cc]:-$cc} PLATFORM=$platform $clean
+		make CC=${alias[$cc]:-$cc} PLATFORM=$platform $make
 		cd $pwd
 
 		if [[ -z $clean ]]; then

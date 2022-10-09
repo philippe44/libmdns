@@ -9,10 +9,7 @@ IFS= read -ra candidates <<< "$list"
 
 # do we have "clean" somewhere in parameters (assuming no compiler has "clean" in it...
 if [[ $@[*]} =~ clean ]]; then
-	clean=y
-	make="cleanlib"
-else
-	make="lib"	
+	clean="clean"
 fi	
 
 # first select platforms/compilers
@@ -36,6 +33,12 @@ do
 	done
 done
 
+if [[ -n $clean ]]; then
+	action="cleanlib"
+else
+	action="lib"	
+fi
+
 declare -a items=( mdnssd tinysvcmdns )
 declare -a tinysvcmdns=( tinysvcmdns.h )
 declare -a mdnssd=( mdnssd.h )
@@ -55,7 +58,7 @@ do
 	for item in ${items[@]}
 	do
 		cd $item
-		make CC=${alias[$cc]:-$cc} PLATFORM=$platform $make
+		make CC=${alias[$cc]:-$cc} PLATFORM=$platform $action
 		cd $pwd
 
 		if [[ -z $clean ]]; then

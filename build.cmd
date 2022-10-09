@@ -2,8 +2,12 @@ setlocal
 
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars32.bat"
 
-msbuild libmdns.sln /property:Configuration=Debug %1
-msbuild libmdns.sln /property:Configuration=Release %1
+if /I [%1] == [rebuild] (
+	set option="-t:Rebuild"
+)
+
+msbuild libmdns.sln /property:Configuration=Debug %option%
+msbuild libmdns.sln /property:Configuration=Release %options%
 
 set target=targets\win32\x86
 
@@ -14,8 +18,8 @@ if exist %target% (
 robocopy lib\win32\x86 %target% lib*.lib lib*.pdb /NDL /NJH /NJS /nc /ns /np
 robocopy tinysvcmdns targets\include\tinysvcmdns tinysvcmdns.h /NDL /NJH /NJS /nc /ns /np
 robocopy mdnssd targets\include\mdnssd mdnssd.h /NDL /NJH /NJS /nc /ns /np
-lib.exe /OUT:%target%/libmdns.lib %target%/libtinysvcmdns.lib %target%/libmdnssd.lib
-lib.exe /OUT:%target%/libmdnsd.lib %target%/libtinysvcmdnsd.lib %target%/libmdnssdd.lib
+lib.exe /OUT:%target%/libmdns.lib %target%/libtinysvcmdns-Release.lib %target%/libmdnssd-Release.lib
+lib.exe /OUT:%target%/libmdns-Debug.lib %target%/libtinysvcmdns-Debug.lib %target%/libmdnssd-Debug.lib
 
 endlocal
 

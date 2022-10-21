@@ -48,11 +48,6 @@ for cc in ${compilers[@]}
 do
 	IFS=- read -r platform host dummy <<< $cc
 	
-	unset thin
-	if [[ $host =~ linux ]]; then
-		thin=--thin
-	fi
-	
 	export CFLAGS=${cflags[$cc]}
 	CC=${alias[$cc]:-$cc}
 	
@@ -70,7 +65,11 @@ do
 		if [[ -z $clean ]]; then
 			# copy libraries & create thin version
 			cp $item/lib/$host/$platform/lib$item.a $target		
-			${CC%-*}-ar -rc $thin $_/libmdns.a $_/lib$item.a		
+			if [[ $host =~ linux ]]; then
+				ar -rc --thin $_/libmdns.a $_/lib$item.a		
+			else 	
+				${CC%-*}-ar -rc $_/libmdns.a $_/lib$item.a		
+			fi	
 			
 			# copy headers
 			declare -n headers=$item

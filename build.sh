@@ -65,11 +65,6 @@ do
 		if [[ -z $clean ]]; then
 			# copy libraries & create thin version
 			cp $item/lib/$host/$platform/lib$item.a $target		
-			if [[ $host =~ linux ]]; then
-				ar -rc --thin $_/libmdns.a $_/lib$item.a		
-			else 	
-				${CC%-*}-ar -rc $_/libmdns.a $_/lib$item.a		
-			fi	
 			
 			# copy headers
 			declare -n headers=$item
@@ -82,4 +77,14 @@ do
 			rm -f $target/lib$item.a
 		fi	
 	done	
+
+	# now concatenate libs (create thin version when possible)
+	if [[ -z $clean ]]; then
+		if [[ $host =~ linux ]]; then
+			ar -rc --thin $target/libmdns.a $target/lib*.a		
+		else 	
+			${CC%-*}-libtool -static -o $target/libmdns.a $target/lib*.a		
+		fi	
+	fi	
+
 done

@@ -15,7 +15,7 @@ declare -A alias=( [x86-linux-gnu-gcc]=i686-stretch-linux-gnu-gcc \
 				   [x86_64-freebsd-gnu-gcc]=x86_64-cross-freebsd12.3-gcc \
 				   [x86_64-solaris-gnu-gcc]=x86_64-cross-solaris2.x-gcc )
 
-declare -A cppflags=( [sparc64-linux-gnu-gcc]="-mcpu=v7" \
+declare -A cflags=( [sparc64-linux-gnu-gcc]="-mcpu=v7" \
                     [mipsel-linux-gnu-gcc]="-march=mips32" \
 					[powerpc-linux-gnu-gcc]="-m32" )
 					
@@ -67,7 +67,7 @@ for cc in ${compilers[@]}
 do
 	IFS=- read -r platform host dummy <<< $cc
 	
-	export CPPFLAGS=${cppflags[$cc]}
+	export CFLAGS=${cflags[$cc]}
 	CC=${alias[$cc]:-$cc}
 	
 	target=targets/$host/$platform	
@@ -78,7 +78,7 @@ do
 	for item in ${items[@]}
 	do
 		cd $item
-		make AR=${CC%-*}-ar CC=$CC PLATFORM=$platform HOST=$host $action
+		make AR=${CC%-*}-ar CC=$CC PLATFORM=$platform HOST=$host $action -j8
 		cd $pwd
 
 		if [[ -z $clean ]]; then
